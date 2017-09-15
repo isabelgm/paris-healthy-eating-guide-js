@@ -23,6 +23,18 @@
   </script>
   <script>
     var map;
+    var markers = [];
+
+    // initalize map function and apply bindings
+   function initMap(){
+     var paris = {lat:48.8554235, lng: 2.3427983};
+     map = new google.maps.Map(document.getElementById('map'),{
+       zoom: 13,
+       center: paris
+     });
+     // apply knockout bindings
+     ko.applyBindings(new viewModel());
+   }
 
     // Model
     var restaurants = [
@@ -32,51 +44,52 @@
         {name: 'Sol Semilla', location: {lat:48.8730959, lng: 2.363135900000001}},
         {name: 'Juice Lab Marais', location: {lat:48.8563595, lng: 2.3637123}}
     ];
+
     // ViewModel
     var viewModel = function(){
       var self = this;
       self.restaurantList = ko.observableArray(restaurants);
+
       //Stores user input
       self.query = ko.observable('');
+
+      // Go through all restaurants,  add a marker and add it to the markers array
+      restaurants.forEach(function(restaurant){
+        var position = restaurant.location;
+        restaurant.marker = new google.maps.Marker({
+          position: position,
+          map: map,
+          animation: google.maps.Animation.DROP
+        });
+        // Push the marker to array of markers
+        markers.push(restaurant.marker);
+      });
+
       // Filters through observableArray and filters results
       self.search = ko.computed(function(){
         var query = this.query().toLowerCase();
         if(!query) {
+          // go through markers array and set markers to visible
+          markers.forEach(function(marker){
+            marker.setVisible(true);
+          });
+          // display list of all restaurants
           return self.restaurantList();
         } else {
+          // display filtered results
           var restaurantList = self.restaurantList();
           return restaurantList.filter(function(restaurant) {
             var restaurantName = restaurant.name;
-            return (restaurantName.toLowerCase().indexOf(query) > -1)
+            var filterResult =  (restaurantName.toLowerCase().indexOf(query) > -1);
+            restaurant.marker.setVisible(filterResult);
+            return filterResult;
           });
+          // hide markers that didn't appear on results using setVisible(false)
         }
       }, self);
     }; // viewModel ends
 
-    // initalize map function
-    function initMap(){
-      var paris = {lat:48.8554235, lng: 2.3427983};;
-      map = new google.maps.Map(document.getElementById('map'),{
-        zoom: 13,
-        center: paris
-      });
-    }
-
-    // add restaurants to map and list
-    function addRestaurants(){
-      for(i=0; i < restaurants.length; i++){
-        var marker = new google.maps.Marker({
-          position: restaurants[i].location,
-          map: map
-        });
-      }
-    }
-
     // call initMap function
     initMap();
-    // apply knockout bindings
-    ko.applyBindings(new viewModel());
-    // call add restaurants function
-    addRestaurants();
   </script>
 </html>
