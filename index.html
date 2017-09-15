@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
   </head>
   <body>
+    <div>
+      <ul data-bind="foreach: restaurants">
+        <li data-bind="text:name"></li>
+      </ul>
+    </div>
     <div id="map"></div>
   </body>
   <script src="js/knockout-3.2.0.js"></script>
@@ -15,6 +20,8 @@
   </script>
   <script>
     var map;
+
+    // Model
     var restaurants = [
         {name: 'Chez Simone', location: {lat:48.8603937, lng: 2.3430545}},
         {name: 'Cafe Coutume', location: {lat:48.851599, lng: 2.3162123}},
@@ -22,6 +29,12 @@
         {name: 'Sol Semilla', location: {lat:48.8730959, lng: 2.363135900000001}},
         {name: 'Juice Lab Marais', location: {lat:48.8563595, lng: 2.3637123}}
     ];
+    // ViewModel
+    var viewModel = function(){
+      var self = this;
+      self.formattedRestaurant = ko.observableArray(restaurants);
+    }
+
     // initalize map function
     function initMap(){
       var paris = {lat:48.86064200000001, lng: 2.352245};
@@ -30,7 +43,8 @@
         center: paris
       });
     }
-    function addMarkers(){
+
+    function addRestaurants(){
       for(i=0; i < restaurants.length; i++){
         var marker = new google.maps.Marker({
           position: restaurants[i].location,
@@ -38,8 +52,10 @@
         });
       }
     }
+    
     //call initMap function
     initMap();
-    addMarkers();
+    ko.applyBindings(new viewModel());
+    addRestaurants();
   </script>
 </html>
