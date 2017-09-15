@@ -56,14 +56,32 @@
       // Go through all restaurants,  add a marker and add it to the markers array
       restaurants.forEach(function(restaurant){
         var position = restaurant.location;
+        var infowindow = new google.maps.InfoWindow();
+
         restaurant.marker = new google.maps.Marker({
           position: position,
           map: map,
+          name: restaurant.name,
           animation: google.maps.Animation.DROP
         });
+
         // Push the marker to array of markers
         markers.push(restaurant.marker);
-      });
+
+        // Populate info window when a marker is clicked
+        restaurant.marker.addListener('click', function(){
+          populateInfoWindow(this, infowindow);
+        });
+
+        function populateInfoWindow(marker, infowindow){
+          if (infowindow.marker != marker) {
+            infowindow.marker = marker;
+            infowindow.setContent('<div>' +  marker.name + '</div>');
+            infowindow.open(map, marker);
+          }
+        }
+
+      }); // end forEach loop
 
       // Filters through observableArray and filters results
       self.search = ko.computed(function(){
