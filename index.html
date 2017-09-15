@@ -16,6 +16,27 @@
     </div>
     <div id="map"></div>
   </body>
+  <!-- Call Facebook Graph API -->
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId            : '114425175911312',
+        autoLogAppEvents : true,
+        xfbml            : true,
+        version          : 'v2.10'
+      });
+      FB.AppEvents.logPageView();
+    };
+
+    (function(d, s, id){
+       var js, fjs = d.getElementsByTagName(s)[0];
+       if (d.getElementById(id)) {return;}
+       js = d.createElement(s); js.id = id;
+       js.src = "https://connect.facebook.net/en_US/sdk.js";
+       fjs.parentNode.insertBefore(js, fjs);
+     }(document, 'script', 'facebook-jssdk'));
+  </script>
+  <script src="js/jquery-3.2.1.min.js"></script>
   <script src="js/knockout-3.2.0.js"></script>
   <!-- Call google maps API -->
   <script
@@ -24,15 +45,15 @@
   <script>
   // Model
   var restaurants = [
-      {name: 'Chez Simone', location: {lat:48.8603937, lng: 2.3430545}},
-      {name: 'Cafe Coutume', location: {lat:48.851599, lng: 2.3162123}},
-      {name: 'Café Pinson', location: {lat:48.863732, lng: 2.3631037}},
-      {name: 'Sol Semilla', location: {lat:48.8730959, lng: 2.363135900000001}},
-      {name: 'Juice Lab Marais', location: {lat:48.8563595, lng: 2.3637123}}
+      {name: 'Chez Simone', location: {lat:48.8603937, lng: 2.3430545}, about:'', id:'1550233375271520'},
+      {name: 'Cafe Coutume', location: {lat:48.851599, lng: 2.3162123}, about:'', id:'187873637913065'},
+      {name: 'Café Pinson', location: {lat:48.863732, lng: 2.3631037}, about:'', id:'138933902926897'},
+      {name: 'Sol Semilla', location: {lat:48.8730959, lng: 2.363135900000001}, about:'', id:'339610619423805'},
+      {name: 'Juice Lab Marais', location: {lat:48.8563595, lng: 2.3637123}, about:'', id:'330401513786136'}
   ];
 
-    var map;
-    var markers = [];
+  var map;
+  var markers = [];
 
     // initalize map function and apply bindings
    function initMap(){
@@ -56,7 +77,7 @@
       // Go through all restaurant and create a marker
       restaurants.forEach(function(restaurant){
         createMarker(restaurant);
-      }); // end forEach loop
+      });
 
       // Filters through observableArray and filters results
       self.search = ko.computed(function(){
@@ -91,23 +112,41 @@
           position: position,
           map: map,
           name: restaurant.name,
+          about: restaurant.about,
+          id: restaurant.id,
           animation: google.maps.Animation.DROP
         });
 
         // Push the marker to array of markers
         markers.push(restaurant.marker);
 
-        // Populate info window when a marker is clicked
+        // Get Facebook info on restaurant when marker is clicked
         restaurant.marker.addListener('click', function(){
-          populateInfoWindow(this, infowindow);
+          getFacebookInfo(restaurant, this);
+        });
+
+        // Add infowindow as a property to restaurant
+        // this makes it available for use outside of this function.
+        restaurant.infowindow = infowindow;
+      }
+
+      // Get Facebook info on restaurant and populate the infowindow with it.
+      function getFacebookInfo(restaurant, marker){
+        FB.api(restaurant.id, {fields: 'about', access_token: '114425175911312|wQm57weM4RPUUT5Labp_kAjKGhM'}, (response) => {
+          console.log(response);
+          restaurant.about = response.about;
+          populateInfoWindow(marker, restaurant.infowindow, restaurant);
         });
       }
 
-
-      function populateInfoWindow(marker, infowindow){
+      // Populate the infowindow and open it.
+      function populateInfoWindow(marker, infowindow, restaurant){
         if (infowindow.marker != marker) {
           infowindow.marker = marker;
-          infowindow.setContent('<div>' +  marker.name + '</div>');
+          infowindow.setContent('<div>' +
+          '<p>' + restaurant.name + '</p>'+
+          '<p>' + restaurant.about + '</p>'
+          + '</div>');
           infowindow.open(map, marker);
         }
       }
