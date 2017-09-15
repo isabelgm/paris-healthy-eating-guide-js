@@ -22,6 +22,15 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAkSk0oNFAPb_8hOoC6zgmIHP6Tc0R-NS8&v=3">
   </script>
   <script>
+  // Model
+  var restaurants = [
+      {name: 'Chez Simone', location: {lat:48.8603937, lng: 2.3430545}},
+      {name: 'Cafe Coutume', location: {lat:48.851599, lng: 2.3162123}},
+      {name: 'Café Pinson', location: {lat:48.863732, lng: 2.3631037}},
+      {name: 'Sol Semilla', location: {lat:48.8730959, lng: 2.363135900000001}},
+      {name: 'Juice Lab Marais', location: {lat:48.8563595, lng: 2.3637123}}
+  ];
+
     var map;
     var markers = [];
 
@@ -36,15 +45,6 @@
      ko.applyBindings(new viewModel());
    }
 
-    // Model
-    var restaurants = [
-        {name: 'Chez Simone', location: {lat:48.8603937, lng: 2.3430545}},
-        {name: 'Cafe Coutume', location: {lat:48.851599, lng: 2.3162123}},
-        {name: 'Café Pinson', location: {lat:48.863732, lng: 2.3631037}},
-        {name: 'Sol Semilla', location: {lat:48.8730959, lng: 2.363135900000001}},
-        {name: 'Juice Lab Marais', location: {lat:48.8563595, lng: 2.3637123}}
-    ];
-
     // ViewModel
     var viewModel = function(){
       var self = this;
@@ -53,34 +53,9 @@
       //Stores user input
       self.query = ko.observable('');
 
-      // Go through all restaurants,  add a marker and add it to the markers array
+      // Go through all restaurant and create a marker
       restaurants.forEach(function(restaurant){
-        var position = restaurant.location;
-        var infowindow = new google.maps.InfoWindow();
-
-        restaurant.marker = new google.maps.Marker({
-          position: position,
-          map: map,
-          name: restaurant.name,
-          animation: google.maps.Animation.DROP
-        });
-
-        // Push the marker to array of markers
-        markers.push(restaurant.marker);
-
-        // Populate info window when a marker is clicked
-        restaurant.marker.addListener('click', function(){
-          populateInfoWindow(this, infowindow);
-        });
-
-        function populateInfoWindow(marker, infowindow){
-          if (infowindow.marker != marker) {
-            infowindow.marker = marker;
-            infowindow.setContent('<div>' +  marker.name + '</div>');
-            infowindow.open(map, marker);
-          }
-        }
-
+        createMarker(restaurant);
       }); // end forEach loop
 
       // Filters through observableArray and filters results
@@ -105,6 +80,37 @@
           // hide markers that didn't appear on results using setVisible(false)
         }
       }, self);
+
+
+      // Create a marker for a restaurant and add it to the markers array
+      function createMarker(restaurant){
+        var position = restaurant.location;
+        var infowindow = new google.maps.InfoWindow();
+
+        restaurant.marker = new google.maps.Marker({
+          position: position,
+          map: map,
+          name: restaurant.name,
+          animation: google.maps.Animation.DROP
+        });
+
+        // Push the marker to array of markers
+        markers.push(restaurant.marker);
+
+        // Populate info window when a marker is clicked
+        restaurant.marker.addListener('click', function(){
+          populateInfoWindow(this, infowindow);
+        });
+      }
+
+
+      function populateInfoWindow(marker, infowindow){
+        if (infowindow.marker != marker) {
+          infowindow.marker = marker;
+          infowindow.setContent('<div>' +  marker.name + '</div>');
+          infowindow.open(map, marker);
+        }
+      }
     }; // viewModel ends
 
     // call initMap function
