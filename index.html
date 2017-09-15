@@ -1,40 +1,45 @@
 <html>
-   <head>
-     <meta charset="UTF-8">
-     <title>Paris Healthy Eating Guide</title>
-     <link rel="stylesheet" href="css/main.css">
-     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-   </head>
-   <body>
-     <div id="map"></div>
-   </body>
-   <script src="js/knockout-3.2.0.js"></script>
-   <!-- Call google maps API -->
-   <script
-       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAkSk0oNFAPb_8hOoC6zgmIHP6Tc0R-NS8&v=3">
-   </script>
-   <script>
-     var map;
-
-     // initalize map function
-     function initMap(){
-       var paris = {lat:48.86064200000001, lng: 2.352245};
-       map = new google.maps.Map(document.getElementById('map'),{
-         zoom: 13,
-         center: paris
-       });
-     }
-
-     function addMarker(){
-       var restaurant = {lat:48.8603937, lng: 2.3430545};
-       var marker = new google.maps.Marker({
-         position: restaurant,
-         map: map
-       });
-     }
-
-     //call initMap function
-     initMap();
-     addMarker();
-   </script>
- +</html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Paris Healthy Eating Guide</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+  <script src="js/knockout-3.2.0.js"></script>
+  <!-- Call google maps API -->
+  <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAkSk0oNFAPb_8hOoC6zgmIHP6Tc0R-NS8&v=3">
+  </script>
+  <script>
+    var map;
+    var restaurants = [
+        {name: 'Chez Simone', location: {lat:48.8603937, lng: 2.3430545}},
+        {name: 'Cafe Coutume', location: {lat:48.851599, lng: 2.3162123}},
+        {name: 'Café Pinson', location: {lat:48.863732, lng: 2.3631037}},
+        {name: 'Sol Semilla', location: {lat:48.8730959, lng: 2.363135900000001}},
+        {name: 'Juice Lab Marais', location: {lat:48.8563595, lng: 2.3637123}}
+    ];
+    // initalize map function
+    function initMap(){
+      var paris = {lat:48.86064200000001, lng: 2.352245};
+      map = new google.maps.Map(document.getElementById('map'),{
+        zoom: 13,
+        center: paris
+      });
+    }
+    function addMarkers(){
+      for(i=0; i < restaurants.length; i++){
+        var marker = new google.maps.Marker({
+          position: restaurants[i].location,
+          map: map
+        });
+      }
+    }
+    //call initMap function
+    initMap();
+    addMarkers();
+  </script>
+</html>
