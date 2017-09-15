@@ -7,7 +7,10 @@
   </head>
   <body>
     <div>
-      <ul data-bind="foreach: restaurants">
+      <div id="search">
+        <input type="text" placeholder="Filter" data-bind="textInput:query">
+      </div>
+      <ul data-bind="foreach: search">
         <li data-bind="text:name"></li>
       </ul>
     </div>
@@ -32,8 +35,23 @@
     // ViewModel
     var viewModel = function(){
       var self = this;
-      self.formattedRestaurant = ko.observableArray(restaurants);
-    }
+      self.restaurantList = ko.observableArray(restaurants);
+      //Stores user input
+      self.query = ko.observable('');
+      // Filters through observableArray and filters results
+      self.search = ko.computed(function(){
+        var query = this.query().toLowerCase();
+        if(!query) {
+          return self.restaurantList();
+        } else {
+          var restaurantList = self.restaurantList();
+          return restaurantList.filter(function(restaurant) {
+            var restaurantName = restaurant.name;
+            return (restaurantName.toLowerCase().indexOf(query) > -1)
+          });
+        }
+      }, self);
+    }; // viewModel ends
 
     // initalize map function
     function initMap(){
