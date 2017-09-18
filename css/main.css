@@ -2,8 +2,58 @@ html, body {
  height: 100%;
  margin: 0;
  padding: 0;
+ font-family: 'Work Sans', sans-serif;
+}
+
+input {
+  width: 100%;
+  padding: 0.5rem;
+}
+
+li {
+  list-style: none;
+  padding: 1rem 0 1rem 1rem;
+}
+
+hr.dark {
+  width: 20%;
+  text-align: center;
+  border: 2px solid black;
 }
 
 #map {
   height: 100%;
+}
+
+#sidebar {
+  padding: 1rem;
+}
+
+/* Tablets + Desktop */
+@media(min-width:1024px){
+  #sidebar {
+    width: 30%;
+    height: 100%;
+    float: left;
+    padding: 2rem;
+  }
+
+  #map {
+    width: 70%;
+    float: right;
+  }
+}
+
+li:hover {
+  background-color: #92B5D9;
+  color: white;
+  cursor: pointer;
+}
+
+.center {
+  text-align: center;
+}
+
+.margin-2 {
+  margin: 2rem;
 }

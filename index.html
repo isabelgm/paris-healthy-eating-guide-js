@@ -2,18 +2,22 @@
   <head>
     <meta charset="UTF-8">
     <title>Paris Healthy Eating Guide</title>
-    <link rel="stylesheet" href="css/main.css">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/main.css">
   </head>
   <body>
-    <div>
-      <div id="search">
+    <nav id="sidebar">
+      <h2 class="center margin-2">Paris Healthy Eating Guide</h2>
+      <hr class="dark">
+      <div id="search" class="margin-2">
         <input type="text" placeholder="Filter" data-bind="textInput:query">
       </div>
       <ul data-bind="foreach: search">
         <li data-bind="text:name, click: openRestaurantMarkerFromList"></li>
       </ul>
-    </div>
+    </nav>
     <div id="map"></div>
   </body>
   <!-- Call Facebook Graph API -->
