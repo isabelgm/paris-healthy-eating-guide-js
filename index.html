@@ -160,8 +160,12 @@
       // Get Facebook info on restaurant and populate the infowindow with it
       function getFacebookInfo(restaurant, marker){
         FB.api(restaurant.id, {fields: 'about', access_token: '114425175911312|wQm57weM4RPUUT5Labp_kAjKGhM'}, (response) => {
-          restaurant.about = response.about;
-          populateInfoWindow(marker, restaurant.infowindow, restaurant);
+          if ( !response || response.error) {
+            alert('An error occured when trying to get info from Facebook.');
+          } else {
+            restaurant.about = response.about;
+            populateInfoWindow(marker, restaurant.infowindow, restaurant);
+          }
         });
       }
 
