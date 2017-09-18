@@ -17,10 +17,6 @@
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
 
-
-// Call google maps API
-
-
 // Model
 var restaurants = [
     {name: 'Chez Simone', location: {lat:48.8603937, lng: 2.3430545}, about:'', id:'1550233375271520'},
@@ -148,8 +144,8 @@ var markers = [];
         infowindow.setContent('<div id="infowindow">' +
         '<p class="marker-name">' + restaurant.name + '</p>'+
         '<p class="marker-description">' + restaurant.about + '</p>' +
-        '<p class="small">' + "info provided by restaurant's Facebook" + '</p>'
-         + '</div>');
+        '<p class="small">' + "info provided by restaurant's Facebook" + '</p>'+
+        '</div>');
       }
     }
 
@@ -157,7 +153,7 @@ var markers = [];
     openRestaurantMarkerFromList = function(restaurant){
       getFacebookInfo(restaurant, restaurant.marker);
       restaurant.infowindow.open(map, restaurant.marker);
-    }
+    };
   }; // viewModel ends
 
   // call initMap function
