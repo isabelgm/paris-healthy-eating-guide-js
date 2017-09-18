@@ -145,6 +145,7 @@
 
         // Get Facebook info on restaurant when marker is clicked
         restaurant.marker.addListener('click', function(){
+          restaurant.marker.setIcon("images/clicked-marker.png");
           getFacebookInfo(restaurant, this);
           infowindow.open(map, this);
         });
