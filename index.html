@@ -11,7 +11,7 @@
         <input type="text" placeholder="Filter" data-bind="textInput:query">
       </div>
       <ul data-bind="foreach: search">
-        <li data-bind="text:name"></li>
+        <li data-bind="text:name, click: openRestaurantMarkerFromList"></li>
       </ul>
     </div>
     <div id="map"></div>
@@ -123,6 +123,7 @@
         // Get Facebook info on restaurant when marker is clicked
         restaurant.marker.addListener('click', function(){
           getFacebookInfo(restaurant, this);
+          infowindow.open(map, this);
         });
 
         // Add infowindow as a property to restaurant
@@ -130,16 +131,15 @@
         restaurant.infowindow = infowindow;
       }
 
-      // Get Facebook info on restaurant and populate the infowindow with it.
+      // Get Facebook info on restaurant and populate the infowindow with it
       function getFacebookInfo(restaurant, marker){
         FB.api(restaurant.id, {fields: 'about', access_token: '114425175911312|wQm57weM4RPUUT5Labp_kAjKGhM'}, (response) => {
-          console.log(response);
           restaurant.about = response.about;
           populateInfoWindow(marker, restaurant.infowindow, restaurant);
         });
       }
 
-      // Populate the infowindow and open it.
+      // Populate the infowindow
       function populateInfoWindow(marker, infowindow, restaurant){
         if (infowindow.marker != marker) {
           infowindow.marker = marker;
@@ -147,8 +147,13 @@
           '<p>' + restaurant.name + '</p>'+
           '<p>' + restaurant.about + '</p>'
           + '</div>');
-          infowindow.open(map, marker);
         }
+      }
+
+      // Open corresponding infowindow when restaurant name is clicked on the list
+      openRestaurantMarkerFromList = function(restaurant){
+        getFacebookInfo(restaurant, restaurant.marker);
+        restaurant.infowindow.open(map, restaurant.marker);
       }
     }; // viewModel ends
 
