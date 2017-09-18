@@ -29,6 +29,10 @@ hr.dark {
   padding: 1rem;
 }
 
+#infowindow {
+  font-family: 'Work Sans', sans-serif;
+}
+
 /* Tablets + Desktop */
 @media(min-width:1024px){
   #sidebar {
@@ -42,6 +46,12 @@ hr.dark {
     width: 70%;
     float: right;
   }
+}
+
+.marker-name {
+  color: black;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
 }
 
 li:hover {

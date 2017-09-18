@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <title>Paris Healthy Eating Guide</title>
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css?family=Work+Sans" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,700" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link rel="stylesheet" href="css/main.css">
   </head>
@@ -64,7 +64,23 @@
      var paris = {lat:48.8554235, lng: 2.3427983};
      map = new google.maps.Map(document.getElementById('map'),{
        zoom: 13,
-       center: paris
+       center: paris,
+       styles: [
+         {
+           featureType: 'water',
+           elementType: 'geometry.fill',
+           stylers: [{color: '#92B5D9'}]
+         },
+         {
+           featureType: 'poi.business',
+           stylers: [{visibility: 'off'}]
+         },
+         {
+           featureType: 'road.highway',
+           elementType: 'labels',
+           stylers: [{visibility: 'off'}]
+         }
+       ]
      });
      // apply knockout bindings
      ko.applyBindings(new viewModel());
@@ -110,11 +126,14 @@
       // Create a marker for a restaurant and add it to the markers array
       function createMarker(restaurant){
         var position = restaurant.location;
-        var infowindow = new google.maps.InfoWindow();
+        var infowindow = new google.maps.InfoWindow({
+          maxWidth: 200
+        });
 
         restaurant.marker = new google.maps.Marker({
           position: position,
           map: map,
+          icon: "images/default-marker.png",
           name: restaurant.name,
           about: restaurant.about,
           id: restaurant.id,
@@ -147,9 +166,9 @@
       function populateInfoWindow(marker, infowindow, restaurant){
         if (infowindow.marker != marker) {
           infowindow.marker = marker;
-          infowindow.setContent('<div>' +
-          '<p>' + restaurant.name + '</p>'+
-          '<p>' + restaurant.about + '</p>'
+          infowindow.setContent('<div id="infowindow">' +
+          '<p class="marker-name">' + restaurant.name + '</p>'+
+          '<p class="marker-description">' + restaurant.about + '</p>'
           + '</div>');
         }
       }
