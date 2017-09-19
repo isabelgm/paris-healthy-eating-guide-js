@@ -156,6 +156,7 @@ var markers = [];
     // info from the restaurant's Facebook page.
     openRestaurantMarker = function(restaurant){
       restaurant.marker.setIcon("images/clicked-marker.png");
+      map.panTo(restaurant.marker.position);
       getFacebookInfo(restaurant, restaurant.marker);
       infowindow.open(map, restaurant.marker);
     };
