@@ -112,6 +112,7 @@ var markers = [];
         restaurant.marker.setIcon("images/clicked-marker.png");
         getFacebookInfo(restaurant, this);
         infowindow.open(map, this);
+
       });
     }
 
@@ -141,8 +142,9 @@ var markers = [];
 
     // Open corresponding infowindow when restaurant name is clicked on the list
     openRestaurantMarkerFromList = function(restaurant){
+      restaurant.marker.setIcon("images/clicked-marker.png");
       getFacebookInfo(restaurant, restaurant.marker);
-      restaurant.infowindow.open(map, restaurant.marker);
+      infowindow.open(map, restaurant.marker);
     };
   }; // viewModel ends
 
