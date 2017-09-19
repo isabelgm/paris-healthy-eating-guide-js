@@ -114,6 +114,14 @@ var markers = [];
 
       // Get Facebook info on restaurant when marker is clicked
       restaurant.marker.addListener('click', function(){
+        // reset icon for previous marker
+        if(infowindow.marker != restaurant.marker){
+          if(typeof infowindow.marker !== "undefined"){
+            var previousMarker = infowindow.marker;
+            previousMarker.setIcon("images/default-marker.png");
+          }
+        }
+        // open current restaurant marker
         openRestaurantMarker(restaurant);
       });
     }
@@ -139,6 +147,8 @@ var markers = [];
         '<p class="marker-description">' + restaurant.about + '</p>' +
         '<p class="small">' + "info provided by restaurant's Facebook" + '</p>'+
         '</div>');
+        var currentMarker = infowindow.marker;
+        return currentMarker;
       }
     }
 
