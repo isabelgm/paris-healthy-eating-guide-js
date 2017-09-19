@@ -3,8 +3,10 @@ A neighborhood map of healthy restaurants in Paris, France using JS.
 
 ![Paris Healthy Eating Guide Screenshot](images/app-screenshot.png?raw=true "Paris Healthy Eating Guide")
 
-## How to use it
- On first entering the site you will see all the healthy restaurants appear on the map. You can filter by restaurant name and the map will update accordingly. Try them out and enjoy! :)
+## How to open the app locally
+1. Download/clone the repository to your computer.
+2. Open index.html in your favorite browser.
+3. That's it! :) 
 
 ## Resources used for this project
 1. Google Maps API
