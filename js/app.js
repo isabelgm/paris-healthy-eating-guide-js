@@ -48,6 +48,11 @@ var markers = [];
    ko.applyBindings(new viewModel());
  }
 
+ function googleError(data){
+   console.log(data);
+   alert('An error occured when loading google maps.');
+ }
+
   // ViewModel
   var viewModel = function(){
     var self = this;
@@ -145,6 +150,3 @@ var markers = [];
       infowindow.open(map, restaurant.marker);
     };
   }; // viewModel ends
-
-  // call initMap function
-  initMap();
