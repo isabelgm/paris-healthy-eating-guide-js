@@ -109,10 +109,7 @@ var markers = [];
 
       // Get Facebook info on restaurant when marker is clicked
       restaurant.marker.addListener('click', function(){
-        restaurant.marker.setIcon("images/clicked-marker.png");
-        getFacebookInfo(restaurant, this);
-        infowindow.open(map, this);
-
+        openRestaurantMarker(restaurant);
       });
     }
 
@@ -140,8 +137,9 @@ var markers = [];
       }
     }
 
-    // Open corresponding infowindow when restaurant name is clicked on the list
-    openRestaurantMarkerFromList = function(restaurant){
+    // Open the corresponding infowindow for a restaurant and populate it with
+    // info from the restaurant's Facebook page.
+    openRestaurantMarker = function(restaurant){
       restaurant.marker.setIcon("images/clicked-marker.png");
       getFacebookInfo(restaurant, restaurant.marker);
       infowindow.open(map, restaurant.marker);
