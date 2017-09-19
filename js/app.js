@@ -1,4 +1,4 @@
-//Call Facebook Graph API
+// Call Facebook Graph API
   window.fbAsyncInit = function() {
     FB.init({
       appId            : '114425175911312',
@@ -53,6 +53,11 @@ var markers = [];
     var self = this;
     self.restaurantList = ko.observableArray(restaurants);
 
+    // Create an infowindow
+    var infowindow = new google.maps.InfoWindow({
+      maxWidth: 200
+    });
+
     // Store user input
     self.query = ko.observable('');
 
@@ -88,9 +93,6 @@ var markers = [];
     // Create a marker for a restaurant and add it to the markers array
     function createMarker(restaurant){
       var position = restaurant.location;
-      var infowindow = new google.maps.InfoWindow({
-        maxWidth: 200
-      });
 
       restaurant.marker = new google.maps.Marker({
         position: position,
@@ -111,10 +113,6 @@ var markers = [];
         getFacebookInfo(restaurant, this);
         infowindow.open(map, this);
       });
-
-      // Add infowindow as a property to restaurant
-      // this makes it available for use outside of this function.
-      restaurant.infowindow = infowindow;
     }
 
     // Get Facebook info on restaurant and populate the infowindow with it
@@ -124,13 +122,13 @@ var markers = [];
           alert('An error occured when trying to get info from Facebook.');
         } else {
           restaurant.about = response.about;
-          populateInfoWindow(marker, restaurant.infowindow, restaurant);
+          populateInfoWindow(marker, restaurant);
         }
       });
     }
 
     // Populate the infowindow
-    function populateInfoWindow(marker, infowindow, restaurant){
+    function populateInfoWindow(marker, restaurant){
       if (infowindow.marker != marker) {
         infowindow.marker = marker;
         infowindow.setContent('<div id="infowindow">' +
