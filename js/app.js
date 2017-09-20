@@ -112,7 +112,7 @@ var markers = [];
 
     // Make request to Foursquare API using venues search
     function getFourSquareData(restaurant, marker){
-      var baseURL = "https://api.foursquare.com/v2/venues/search?v=20161016&ll="
+      var baseURL = "https://api.foursquare.com/v2/venues/search?v=20161016&ll=";
       var latLong = restaurant.formattedLatLong;
       var formattedName = restaurant.formattedName;
       var clientID = "G4DRVXPMGEUYV2HUQP4ZXXSEOHFEJKIQRTIUW1NZYF5Z1FJ3";
@@ -136,16 +136,16 @@ var markers = [];
     // Use API data and add it to a restaurant, then populate the infowindow
     function useAPIData(data, restaurant, marker){
       var foursquareRestaurant = data.response.venues[0];
-      var name = foursquareRestaurant.name
+      var name = foursquareRestaurant.name;
       var phone = foursquareRestaurant.contact.formattedPhone;
       var website = foursquareRestaurant.url;
       restaurant.address = foursquareRestaurant.location.address;
-      if(phone == undefined){
+      if(phone === undefined){
         restaurant.phone = "Not available.";
       } else {
         restaurant.phone = phone;
       }
-      if(website == undefined){
+      if(website === undefined){
         restaurant.url = "Not available.";
       } else {
         restaurant.url = website;
