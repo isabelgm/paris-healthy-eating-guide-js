@@ -71,6 +71,63 @@ var markers = [];
       createMarker(restaurant);
     });
 
+    // Go through all restaurants and format name and lat long for URL
+    restaurants.forEach(function(restaurant){
+      formatName(restaurant);
+      formatLatLong(restaurant);
+    });
+
+    // Go through all restaurants and get Foursquare Data
+    restaurants.forEach(function(restaurant){
+      getFourSquareData(restaurant);
+    });
+
+    // Format restaurant name so that it can be passed as a param in URL
+    function formatName(restaurant){
+      var formattedName = restaurant.name.split(' ').join('%20');
+      console.log(formattedName);
+      restaurant.formattedName = formattedName;
+    }
+
+    // Format restaurant location lat long so that it can be passed as a param in URL
+    function formatLatLong(restaurant){
+      var formattedLatLong = " " + restaurant.location.lat + ',' + restaurant.location.lng;
+      restaurant.formattedLatLong = formattedLatLong;
+      console.log(formattedLatLong);
+    }
+
+    // Make request to Foursquare API using venues search
+    function getFourSquareData(restaurant){
+      var baseURL = "https://api.foursquare.com/v2/venues/search?v=20161016&ll="
+      var latLong = restaurant.formattedLatLong;
+      var formattedName = restaurant.formattedName;
+      var clientID = "G4DRVXPMGEUYV2HUQP4ZXXSEOHFEJKIQRTIUW1NZYF5Z1FJ3";
+      var clientSECRET = "A4QNLC2UPUQ4Z3R3PFRW055S04OU3QRBXUQYFL4N5P0LMY43";
+      var query = formattedName;
+      var params = latLong + "&query=" + formattedName + "&intent=checkin&client_id=" + clientID + "&client_secret=" + clientSECRET;
+      var foursquareURL = baseURL + params;
+      console.log(foursquareURL);
+      $.ajax({
+        type: "POST",
+        url: foursquareURL,
+        success: function(data){
+          console.log(data);
+          useFoursquareData(data);
+        },
+        error: function(e){
+          console.log(e);
+        }
+      });
+    }
+
+    function useFoursquareData(data){
+      var restaurant = data.response.venues[0];
+      var name = restaurant.name
+      var address = restaurant.location.address;
+      var phone = restaurant.contact.formattedPhone;
+      console.log(name + ' ' + address + ' ' + phone);
+    }
+
     // Filter input results
     self.search = ko.computed(function(){
       var query = this.query().toLowerCase();
