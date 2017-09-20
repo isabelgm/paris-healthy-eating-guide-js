@@ -1,22 +1,3 @@
-// Call Facebook Graph API
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId            : '114425175911312',
-      autoLogAppEvents : true,
-      xfbml            : true,
-      version          : 'v2.10'
-    });
-    FB.AppEvents.logPageView();
-  };
-
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "https://connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-
 // Model
 var map;
 var markers = [];
@@ -199,15 +180,4 @@ var markers = [];
         // hide markers that didn't appear on results using setVisible(false)
       }
     }, self);
-
-    // Get Facebook info on restaurant and populate the infowindow with it
-    function getFacebookInfo(restaurant, marker){
-      FB.api(restaurant.id, {fields: 'about', access_token: '114425175911312|wQm57weM4RPUUT5Labp_kAjKGhM'}, (response) => {
-        if ( !response || response.error) {
-          alert('An error occured when trying to get info from Facebook.');
-        } else {
-          restaurant.about = response.about;
-        }
-      });
-    }
   }; // viewModel ends
