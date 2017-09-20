@@ -66,91 +66,28 @@ var markers = [];
     // Store user input
     self.query = ko.observable('');
 
-    // Go through all restaurants and create a marker for each one
-    restaurants.forEach(function(restaurant){
-      createMarker(restaurant);
-    });
-
     // Go through all restaurants and format name and lat long for URL
     restaurants.forEach(function(restaurant){
       formatName(restaurant);
       formatLatLong(restaurant);
     });
 
-    // Go through all restaurants and get Foursquare Data
+    // Go through all restaurants and create a marker for each one
     restaurants.forEach(function(restaurant){
-      getFourSquareData(restaurant);
+      createMarker(restaurant);
     });
 
     // Format restaurant name so that it can be passed as a param in URL
     function formatName(restaurant){
       var formattedName = restaurant.name.split(' ').join('%20');
-      console.log(formattedName);
       restaurant.formattedName = formattedName;
     }
 
-    // Format restaurant location lat long so that it can be passed as a param in URL
+    // Format a restaurant's location so that it can be passed as a param in URL
     function formatLatLong(restaurant){
       var formattedLatLong = " " + restaurant.location.lat + ',' + restaurant.location.lng;
       restaurant.formattedLatLong = formattedLatLong;
-      console.log(formattedLatLong);
     }
-
-    // Make request to Foursquare API using venues search
-    function getFourSquareData(restaurant){
-      var baseURL = "https://api.foursquare.com/v2/venues/search?v=20161016&ll="
-      var latLong = restaurant.formattedLatLong;
-      var formattedName = restaurant.formattedName;
-      var clientID = "G4DRVXPMGEUYV2HUQP4ZXXSEOHFEJKIQRTIUW1NZYF5Z1FJ3";
-      var clientSECRET = "A4QNLC2UPUQ4Z3R3PFRW055S04OU3QRBXUQYFL4N5P0LMY43";
-      var query = formattedName;
-      var params = latLong + "&query=" + formattedName + "&intent=checkin&client_id=" + clientID + "&client_secret=" + clientSECRET;
-      var foursquareURL = baseURL + params;
-      console.log(foursquareURL);
-      $.ajax({
-        type: "POST",
-        url: foursquareURL,
-        success: function(data){
-          console.log(data);
-          useFoursquareData(data);
-        },
-        error: function(e){
-          console.log(e);
-        }
-      });
-    }
-
-    function useFoursquareData(data){
-      var restaurant = data.response.venues[0];
-      var name = restaurant.name
-      var address = restaurant.location.address;
-      var phone = restaurant.contact.formattedPhone;
-      console.log(name + ' ' + address + ' ' + phone);
-    }
-
-    // Filter input results
-    self.search = ko.computed(function(){
-      var query = this.query().toLowerCase();
-      if(!query) {
-        // go through markers array and set markers to visible
-        markers.forEach(function(marker){
-          marker.setVisible(true);
-        });
-        // display list of all restaurants
-        return self.restaurantList();
-      } else {
-        // display filtered results
-        var restaurantList = self.restaurantList();
-        return restaurantList.filter(function(restaurant) {
-          var restaurantName = restaurant.name;
-          var filterResult =  (restaurantName.toLowerCase().indexOf(query) > -1);
-          restaurant.marker.setVisible(filterResult);
-          return filterResult;
-        });
-        // hide markers that didn't appear on results using setVisible(false)
-      }
-    }, self);
-
 
     // Create a marker for a restaurant and add it to the markers array
     function createMarker(restaurant){
@@ -183,16 +120,45 @@ var markers = [];
       });
     }
 
-    // Get Facebook info on restaurant and populate the infowindow with it
-    function getFacebookInfo(restaurant, marker){
-      FB.api(restaurant.id, {fields: 'about', access_token: '114425175911312|wQm57weM4RPUUT5Labp_kAjKGhM'}, (response) => {
-        if ( !response || response.error) {
-          alert('An error occured when trying to get info from Facebook.');
-        } else {
-          restaurant.about = response.about;
-          populateInfoWindow(marker, restaurant);
+    // Open the corresponding infowindow for a restaurant and populate it with
+    // info from the restaurant's Foursquare page.
+    openRestaurantMarker = function(restaurant){
+      restaurant.marker.setIcon("images/clicked-marker.png");
+      map.panTo(restaurant.marker.position);
+      getFourSquareData(restaurant, restaurant.marker);
+      infowindow.open(map, restaurant.marker);
+    };
+
+    // Make request to Foursquare API using venues search
+    function getFourSquareData(restaurant, marker){
+      var baseURL = "https://api.foursquare.com/v2/venues/search?v=20161016&ll="
+      var latLong = restaurant.formattedLatLong;
+      var formattedName = restaurant.formattedName;
+      var clientID = "G4DRVXPMGEUYV2HUQP4ZXXSEOHFEJKIQRTIUW1NZYF5Z1FJ3";
+      var clientSECRET = "A4QNLC2UPUQ4Z3R3PFRW055S04OU3QRBXUQYFL4N5P0LMY43";
+      var query = formattedName;
+      var params = latLong + "&query=" + formattedName + "&intent=checkin&client_id=" + clientID + "&client_secret=" + clientSECRET;
+      var foursquareURL = baseURL + params;
+      $.ajax({
+        type: "POST",
+        url: foursquareURL,
+        success: function(data){
+          useAPIData(data, restaurant, marker);
+        },
+        error: function(e){
+          console.log(e);
         }
       });
+    }
+
+    // Use API data and add it to a restaurant, then populate the infowindow
+    function useAPIData(data, restaurant, marker){
+      var foursquareRestaurant = data.response.venues[0];
+      var name = foursquareRestaurant.name
+      restaurant.address = foursquareRestaurant.location.address;
+      restaurant.phone = foursquareRestaurant.contact.formattedPhone;
+      restaurant.url = foursquareRestaurant.url;
+      populateInfoWindow(marker, restaurant);
     }
 
     // Populate the infowindow
@@ -201,20 +167,47 @@ var markers = [];
         infowindow.marker = marker;
         infowindow.setContent('<div id="infowindow">' +
         '<p class="marker-name">' + restaurant.name + '</p>'+
-        '<p class="marker-description">' + restaurant.about + '</p>' +
-        '<p class="small">' + "info provided by restaurant's Facebook" + '</p>'+
+        '<p>' + restaurant.address + '</p>' +
+        '<p>' + restaurant.phone + '</p>' +
+        '<p>' + restaurant.url + '</p>' +
+        '<p class="small">' + "info provided by Foursquare" + '</p>'+
         '</div>');
         var currentMarker = infowindow.marker;
         return currentMarker;
       }
     }
 
-    // Open the corresponding infowindow for a restaurant and populate it with
-    // info from the restaurant's Facebook page.
-    openRestaurantMarker = function(restaurant){
-      restaurant.marker.setIcon("images/clicked-marker.png");
-      map.panTo(restaurant.marker.position);
-      getFacebookInfo(restaurant, restaurant.marker);
-      infowindow.open(map, restaurant.marker);
-    };
+    // Filter input results
+    self.search = ko.computed(function(){
+      var query = this.query().toLowerCase();
+      if(!query) {
+        // go through markers array and set markers to visible
+        markers.forEach(function(marker){
+          marker.setVisible(true);
+        });
+        // display list of all restaurants
+        return self.restaurantList();
+      } else {
+        // display filtered results
+        var restaurantList = self.restaurantList();
+        return restaurantList.filter(function(restaurant) {
+          var restaurantName = restaurant.name;
+          var filterResult =  (restaurantName.toLowerCase().indexOf(query) > -1);
+          restaurant.marker.setVisible(filterResult);
+          return filterResult;
+        });
+        // hide markers that didn't appear on results using setVisible(false)
+      }
+    }, self);
+
+    // Get Facebook info on restaurant and populate the infowindow with it
+    function getFacebookInfo(restaurant, marker){
+      FB.api(restaurant.id, {fields: 'about', access_token: '114425175911312|wQm57weM4RPUUT5Labp_kAjKGhM'}, (response) => {
+        if ( !response || response.error) {
+          alert('An error occured when trying to get info from Facebook.');
+        } else {
+          restaurant.about = response.about;
+        }
+      });
+    }
   }; // viewModel ends
