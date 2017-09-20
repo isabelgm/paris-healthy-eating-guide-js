@@ -136,9 +136,20 @@ var markers = [];
     function useAPIData(data, restaurant, marker){
       var foursquareRestaurant = data.response.venues[0];
       var name = foursquareRestaurant.name
+      var phone = foursquareRestaurant.contact.formattedPhone;
+      var website = foursquareRestaurant.url;
       restaurant.address = foursquareRestaurant.location.address;
-      restaurant.phone = foursquareRestaurant.contact.formattedPhone;
-      restaurant.url = foursquareRestaurant.url;
+      if(phone == undefined){
+        restaurant.phone = "Not available.";
+      } else {
+        restaurant.phone = phone;
+      }
+      if(website == undefined){
+        restaurant.url = "Not available.";
+      } else {
+        restaurant.url = website;
+      }
+
       populateInfoWindow(marker, restaurant);
     }
 
@@ -147,10 +158,10 @@ var markers = [];
       if (infowindow.marker != marker) {
         infowindow.marker = marker;
         infowindow.setContent('<div id="infowindow">' +
-        '<p class="marker-name">' + restaurant.name + '</p>'+
-        '<p>' + restaurant.address + '</p>' +
-        '<p>' + restaurant.phone + '</p>' +
-        '<p>' + restaurant.url + '</p>' +
+        '<h5 class="marker-name">' + restaurant.name + '</h5>'+
+        '<p>' + '<span class=bold>Address: </span>' + restaurant.address + '</p>' +
+        '<p>' + '<span class=bold>Phone: </span>' + restaurant.phone + '</p>' +
+        '<p>' + '<span class=bold>Website: </span>' + '<a href="' + restaurant.url + '">' + restaurant.url + '</a>' + '</p>' +
         '<p class="small">' + "info provided by Foursquare" + '</p>'+
         '</div>');
         var currentMarker = infowindow.marker;

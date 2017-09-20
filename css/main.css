@@ -51,7 +51,7 @@ hr.dark {
 .marker-name {
   color: black;
   font-weight: 700;
-  margin-bottom: 0.25rem;
+  margin-bottom: 1rem;
 }
 
 li:hover {
@@ -66,4 +66,8 @@ li:hover {
 
 .margin-2 {
   margin: 2rem;
+}
+
+.bold {
+  font-weight: 700;
 }
