@@ -128,6 +128,7 @@ var markers = [];
         },
         error: function(e){
           console.log(e);
+          alert('There was a problem fetching restaurant data from Foursquare.')
         }
       });
     }
@@ -149,7 +150,6 @@ var markers = [];
       } else {
         restaurant.url = website;
       }
-
       populateInfoWindow(marker, restaurant);
     }
 
