@@ -35,7 +35,7 @@ var markers = [];
  }
 
   // ViewModel
-  var viewModel = function(){
+  var ViewModel = function(){
     var self = this;
     self.restaurantList = ko.observableArray(restaurants);
 
