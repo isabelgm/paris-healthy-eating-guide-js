@@ -89,13 +89,7 @@ var markers = [];
 
       // Get Facebook info on restaurant when marker is clicked
       restaurant.marker.addListener('click', function(){
-        // reset icon for previous marker
-        if(infowindow.marker != restaurant.marker){
-          if(typeof infowindow.marker !== "undefined"){
-            var previousMarker = infowindow.marker;
-            previousMarker.setIcon("images/default-marker.png");
-          }
-        }
+
         // open current restaurant marker
         openRestaurantMarker(restaurant);
       });
@@ -104,11 +98,22 @@ var markers = [];
     // Open the corresponding infowindow for a restaurant and populate it with
     // info from the restaurant's Foursquare page.
     openRestaurantMarker = function(restaurant){
+      resetMarkerIcon(restaurant);
       restaurant.marker.setIcon("images/clicked-marker.png");
       map.panTo(restaurant.marker.position);
       getFourSquareData(restaurant, restaurant.marker);
       infowindow.open(map, restaurant.marker);
     };
+
+    // reset icon for previous marker
+    function resetMarkerIcon(restaurant){
+      if(infowindow.marker != restaurant.marker){
+        if(typeof infowindow.marker !== "undefined"){
+          var previousMarker = infowindow.marker;
+          previousMarker.setIcon("images/default-marker.png");
+        }
+      }
+    }
 
     // Make request to Foursquare API using venues search
     function getFourSquareData(restaurant, marker){
