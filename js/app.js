@@ -125,6 +125,7 @@ var markers = [];
       var query = formattedName;
       var params = latLong + "&query=" + formattedName + "&intent=checkin&client_id=" + clientID + "&client_secret=" + clientSECRET;
       var foursquareURL = baseURL + params;
+      infowindow.setContent('');
       $.ajax({
         type: "POST",
         url: foursquareURL,
