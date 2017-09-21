@@ -26,7 +26,7 @@ var markers = [];
      ]
    });
    // Apply knockout bindings
-   ko.applyBindings(new viewModel());
+   ko.applyBindings(new ViewModel());
  }
 
  function googleError(data){
